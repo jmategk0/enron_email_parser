@@ -1,13 +1,15 @@
-import os
-import json
+import datetime
 import csv
+import json
+import os
 from pprint import pprint
 
 
 sample_data_path = "maildir_sample"
-full_data_path = "maildir_full"
+full_data_path = "/home/james/Downloads/maildir_full"
 
 # https://stackoverflow.com/questions/3207219/how-do-i-list-all-files-of-a-directory
+# https://stackoverflow.com/questions/19699367/unicodedecodeerror-utf-8-codec-cant-decode-byte
 
 
 def generate_results(base_dir):
@@ -22,8 +24,12 @@ def generate_results(base_dir):
 
 def parse_email_file(filepath):
 
-    with open(filepath) as file:
+    with open(filepath, encoding="ISO-8859-1") as file:
         email_data = file.read()
+        # try:
+        #     email_data = file.read()
+        # except UnicodeDecodeError:
+        #     print(filepath)
 
         first_index = 0
         # find the end of the metadata block first to avoid edge case bugs in email text
@@ -67,6 +73,7 @@ def parse_email_file(filepath):
 
 
 def export_results(export_filename, results_data, to_csv=True):
+    print(len(results_data))
 
     if to_csv:
         with open(export_filename, 'w') as csv_file_export:
@@ -86,4 +93,6 @@ def run_pipeline(enron_data_dir, export_csv_file):
     results = generate_results(base_dir=enron_data_dir)
     export_results(export_filename=export_csv_file, results_data=results)
 
-run_pipeline(enron_data_dir=sample_data_path, export_csv_file="sample.csv")
+pprint(str(datetime.datetime.now()))
+run_pipeline(enron_data_dir=full_data_path, export_csv_file="sample.csv")
+pprint(str(datetime.datetime.now()))
