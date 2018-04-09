@@ -45,9 +45,15 @@ def parse_email_file(filepath):
 
         message_id = email_data[message_start:date_start_raw]
         date = email_data[date_start:from_start_raw]
-        from_line = email_data[from_start: to_start_raw]
+
         to_line = email_data[to_start: subject_start_raw]
         text_body = email_data[metadata_end+1: len(email_data)-1]
+
+        # this block fixes a bug where some emails don't have a To line
+        if "\nTo: " in email_data:
+            from_line = email_data[from_start: to_start_raw]
+        else:
+            from_line = email_data[from_start: subject_start_raw]
 
         final_data = {
             "Message-ID": message_id.strip(),
